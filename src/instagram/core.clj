@@ -5,8 +5,6 @@
 
 (def instagram-client-id "e964033fc4f7456092d43555a94fb972")
 
-(def query-params {:client_id instagram-client-id})
-
 (defn get-rel-url
   "get url for `follows` or `followed-by` relationship"
   [user-id relationship]
@@ -52,10 +50,11 @@
 
 (defn -main
   [user-id]
-  (let [follows (get-users-list user-id "follows")
-        followed-by (get-users-list user-id "followed-by")
-        follows-ids (get-id-set follows)
-        followed-by-ids (get-id-set followed-by)
+  (let [follows (future (get-users-list user-id "follows"))
+        followed-by (future (get-users-list user-id "followed-by"))
+        follows-ids (get-id-set @follows)
+        followed-by-ids (get-id-set @followed-by)
         difference (clojure.set/difference follows-ids followed-by-ids)]
     (println (clojure.string/join "\n"
-                (map (partial get-name-by-id follows) difference)))))
+                (map (partial get-name-by-id @follows) difference)))
+    (System/exit 0)))
