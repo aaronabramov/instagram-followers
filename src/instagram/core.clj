@@ -55,6 +55,7 @@
         follows-ids (get-id-set @follows)
         followed-by-ids (get-id-set @followed-by)
         difference (clojure.set/difference follows-ids followed-by-ids)]
-    (println (clojure.string/join "\n"
-                (map (partial get-name-by-id @follows) difference)))
+    (println (clojure.string/join "\n" (map #(get % "username") @followed-by)))
+    ;; (println (clojure.string/join "\n"
+    ;;             (map (partial get-name-by-id @follows) difference)))
     (System/exit 0)))
